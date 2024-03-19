@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h1>Home</h1>
+    <h1>Space Cloud TODO List</h1>
   </div>
 </template>
 
