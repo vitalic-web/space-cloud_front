@@ -19,7 +19,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/todo',
-    name: 'Dashboard',
+    name: 'ToDo',
     component: () => import('../views/ToDo.vue'),
     beforeEnter: (to, from, next) => {
       const authStore = useAuthStore();

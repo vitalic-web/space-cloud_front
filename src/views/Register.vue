@@ -9,7 +9,6 @@
       status-icon
       :rules="rules"
       label-width="auto"
-      class="demo-ruleForm"
     >
       <el-form-item label="Name" prop="name">
         <el-input v-model="registerForm.name" />
@@ -100,7 +99,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
           console.log('res', res.data.user);
           ElNotification({
             title: 'Success',
-            message: `Registration successful for ${res.data.user.name}. Redirect to log in page.`,
+            message: `Registration successful for ${res.data.user.username}. Redirect to log in page.`,
             type: 'success',
           });
           setTimeout(() => {
