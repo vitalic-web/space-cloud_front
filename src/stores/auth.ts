@@ -3,7 +3,7 @@ import { IAuthState } from '@/types';
 
 const useAuthStore = defineStore('auth', {
   state: (): IAuthState => ({
-    token: null,
+    token: localStorage.getItem('token') || null,
     username: localStorage.getItem('username') || null,
   }),
   actions: {

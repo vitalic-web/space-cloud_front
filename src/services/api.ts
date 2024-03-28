@@ -3,7 +3,7 @@ import useAuthStore from '@/stores/auth';
 
 const API_BASE_URL = 'http://localhost:3000/';
 
-export const publicApi = axios.create({
+const publicApi = axios.create({
   baseURL: API_BASE_URL,
 });
 
@@ -17,11 +17,11 @@ privateApi.interceptors.request.use(
     const authStore = useAuthStore();
     const { token } = authStore;
     if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => Promise.reject(error),
 );
 
-export { privateApi };
+export { publicApi, privateApi };

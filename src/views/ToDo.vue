@@ -4,4 +4,12 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
+import useToDoStore from '@/stores/todo';
+
+const toDoStore = useToDoStore();
+
+onMounted(() => {
+  toDoStore.getToDoList();
+});
 </script>
