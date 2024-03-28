@@ -72,11 +72,11 @@ const submitLoginForm = (formEl: FormInstance | undefined) => {
           authStore.setUsername(res.data.username);
           ElNotification({
             title: 'Success',
-            message: `Auth successful for ${res.data.username}. Redirect to your todos.`,
+            message: `Auth successful for ${res.data.username}. Redirect to home page.`,
             type: 'success',
           });
           setTimeout(() => {
-            router.push({ name: 'ToDo' });
+            router.push({ name: 'Home' });
           }, 2000);
         }
       } catch (err) {

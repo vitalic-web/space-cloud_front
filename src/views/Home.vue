@@ -5,10 +5,17 @@
       please <router-link :to="{ name: 'Register' }">register</router-link>
       or <router-link :to="{ name: 'Login' }">log in</router-link>.
     </h2>
-    <h2 v-else>
-      Hello, {{ username }}!
-    </h2>
-    <button v-if="authStore.checkAuth()" @click="authStore.logOut()">Log Out</button>
+    <div class="home-user" v-else>
+      <h2>Hello, {{ username }}!</h2>
+      <router-link :to="{ name: 'ToDo' }">Check your todos</router-link>
+      <button
+        v-if="authStore.checkAuth()"
+        class="home-user__log-out"
+        @click="authStore.logOut()"
+      >
+        Log Out
+      </button>
+    </div>
   </div>
 </template>
 
@@ -19,3 +26,14 @@ import { storeToRefs } from 'pinia';
 const authStore = useAuthStore();
 const { username } = storeToRefs(authStore);
 </script>
+
+<style lang="scss">
+.home-user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  &__log-out {
+    margin-top: 20px;
+  }
+}
+</style>
