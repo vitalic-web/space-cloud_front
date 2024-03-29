@@ -67,7 +67,6 @@ const submitLoginForm = (formEl: FormInstance | undefined) => {
           password: loginForm.pass,
         });
         if (res.status === 200) {
-          console.log('res', res.data);
           authStore.setAccessToken(res.data.accessToken);
           authStore.setRefreshToken(res.data.refreshToken);
           authStore.setUsername(res.data.username);

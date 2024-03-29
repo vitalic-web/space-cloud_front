@@ -9,13 +9,12 @@ interface IFile {
   downloadLink: string;
 }
 
-interface IToDoItem {
-  id: number;
-  name: string;
+export interface IToDoItem {
+  title: string;
   description: string;
   completed: boolean;
-  files: IFile[];
   comment: string;
+  files: IFile[];
 }
 
 export interface IToDoState {
