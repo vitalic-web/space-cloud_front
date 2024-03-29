@@ -18,5 +18,6 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'consistent-return': 'off',
     'import/no-extraneous-dependencies': 'off',
+    'no-underscore-dangle': 'off',
   },
 };

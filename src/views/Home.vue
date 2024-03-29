@@ -11,7 +11,7 @@
       <button
         v-if="authStore.checkAuth()"
         class="home-user__log-out"
-        @click="authStore.logOut()"
+        @click="authStore.clearAuthData()"
       >
         Log Out
       </button>

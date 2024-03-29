@@ -68,7 +68,8 @@ const submitLoginForm = (formEl: FormInstance | undefined) => {
         });
         if (res.status === 200) {
           console.log('res', res.data);
-          authStore.setToken(res.data.token);
+          authStore.setAccessToken(res.data.accessToken);
+          authStore.setRefreshToken(res.data.refreshToken);
           authStore.setUsername(res.data.username);
           ElNotification({
             title: 'Success',
