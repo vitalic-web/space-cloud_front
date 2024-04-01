@@ -5,21 +5,28 @@
     <h2>Not completed</h2>
     <div class="todo-list-not-completed">
       <el-card class="todo-item" v-for="todo in toDoList.notCompleted" :key="todo._id">
-        <h3 class="todo-item__title">{{ todo.title }}</h3>
-        <p class="todo-item__description">{{ todo.description }}</p>
-        <hr />
-        <p class="todo-item__comment">
-          <span class="todo-item__comment-title">comment: </span>
-          {{ todo.comment }}
-        </p>
-        <el-switch v-model="todo.completed" />
+        <h3 class="todo-item__header">{{ todo.title }}</h3>
+        <div class="todo-item__main">
+          <p class="todo-item__description">{{ todo.description }}</p>
+          <p class="todo-item__comment">
+            <span class="todo-item__comment-title">comment: </span>
+            {{ todo.comment }}
+          </p>
+        </div>
+        <div class="todo-item__footer">
+          <hr class="todo-item__footer-line" />
+          <div class="todo-item__footer-buttons">
+            <el-switch v-model="todo.completed" disabled />
+            <el-button type="primary" :icon="Edit" circle />
+          </div>
+        </div>
       </el-card>
     </div>
     <h2>Completed</h2>
     <div class="todo-list-completed">
       <el-card class="todo-item-completed" v-for="todo in toDoList.completed" :key="todo._id">
-        <h3 class="todo-item__title todo-item__title_completed">{{ todo.title }}</h3>
-        <el-switch v-model="todo.completed" />
+        <h3 class="todo-item__header todo-item__header_completed">{{ todo.title }}</h3>
+        <el-switch v-model="todo.completed" disabled />
       </el-card>
     </div>
     <h2>Add new TODO</h2>
@@ -53,6 +60,7 @@
 import { onMounted, reactive } from 'vue';
 import { storeToRefs } from 'pinia';
 import useToDoStore from '@/stores/todo';
+import { Edit } from '@element-plus/icons-vue';
 
 const toDoStore = useToDoStore();
 const { toDoList } = storeToRefs(toDoStore);
@@ -112,13 +120,19 @@ onMounted(() => {
 }
 
 .todo-item {
-  //width: 480px;
-  &__title {
+  &__header {
     font-size: 25px;
     margin: 0;
     &_completed {
       text-decoration: line-through;
     }
+  }
+  &__main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
   }
   &__description {
     font-size: 20px;
@@ -131,12 +145,25 @@ onMounted(() => {
   &__comment-title {
     font-weight: bold;
   }
+  &__footer {
+    display: flex;
+    flex-direction: column;
+  }
+  &__footer-line {
+    width: 100%;
+  }
+  &__footer-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 .todo-item-completed .el-card__body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-direction: row !important;
 }
 
 #todo-buttons {
@@ -148,6 +175,11 @@ onMounted(() => {
 #todo {
   .el-card__body {
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+    box-sizing: border-box;
   }
 }
 </style>
