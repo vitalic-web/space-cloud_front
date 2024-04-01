@@ -1,7 +1,19 @@
 <template>
   <div id="todo" class="todo-page">
     <router-link :to="{ name: 'Home' }">Home</router-link>
-    <h1>ToDo</h1>
+    <h1>ToDoList</h1>
+    <div class="todo-list">
+      <el-card class="todo-item" v-for="todo in toDoList" :key="todo._id">
+        <h3 class="todo-item__title">{{ todo.title }}</h3>
+        <p class="todo-item__description">{{ todo.description }}</p>
+        <hr />
+        <p class="todo-item__comment">
+          <span class="todo-item__comment-title">comment: </span>
+          {{ todo.comment }}
+        </p>
+        <el-switch v-model="todo.completed" />
+      </el-card>
+    </div>
     <el-form
       style="width: 50%"
       :model="newToDoItem"
@@ -30,9 +42,11 @@
 
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue';
+import { storeToRefs } from 'pinia';
 import useToDoStore from '@/stores/todo';
 
 const toDoStore = useToDoStore();
+const { toDoList } = storeToRefs(toDoStore);
 
 const newToDoItem = reactive({
   title: '',
@@ -42,17 +56,21 @@ const newToDoItem = reactive({
   files: [],
 });
 
-const postToDo = () => {
-  console.log('newToDoItem', newToDoItem);
-  toDoStore.postToDo(newToDoItem);
-};
-
 const clearToDo = () => {
   newToDoItem.title = '';
   newToDoItem.description = '';
   newToDoItem.completed = false;
   newToDoItem.files = [];
-  newToDoItem.comments = '';
+  newToDoItem.comment = '';
+};
+
+const postToDo = async () => {
+  try {
+    await toDoStore.postToDo(newToDoItem);
+    clearToDo();
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 onMounted(() => {
@@ -65,6 +83,29 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.todo-item {
+  width: 480px;
+  &__title {
+    font-size: 25px;
+  }
+  &__description {
+    font-size: 20px;
+  }
+  &__comment {
+    font-style: italic;
+  }
+  &__comment-title {
+    font-weight: bold;
+  }
 }
 
 #todo-buttons {

@@ -18,7 +18,9 @@ const useToDoStore = defineStore('todo', {
     },
     async getToDoList() {
       try {
-        await privateApi.get('/todo-list');
+        const todoList = await privateApi.get('/todo-list');
+        this.toDoList = todoList.data;
+        console.log('todoList', todoList.data);
       } catch (err) {
         console.log(err);
       }

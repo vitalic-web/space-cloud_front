@@ -27,7 +27,8 @@ privateApi.interceptors.request.use(
 // Интерсептор для обновления токена
 privateApi.interceptors.response.use(undefined, async (error) => {
   const originalRequest = error.config;
-  if (error.response.status === 401 && !originalRequest._retry) {
+  // на бэке если токен невалидный, отправляем статус 403
+  if (error.response.status === 403 && !originalRequest._retry) {
     originalRequest._retry = true;
     const authStore = useAuthStore();
     try {

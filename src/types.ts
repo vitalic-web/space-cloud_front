@@ -15,6 +15,7 @@ export interface IToDoItem {
   completed: boolean;
   comment: string;
   files: IFile[];
+  _id: string;
 }
 
 export interface IToDoState {
