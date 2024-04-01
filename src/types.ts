@@ -15,9 +15,12 @@ export interface IToDoItem {
   completed: boolean;
   comment: string;
   files: IFile[];
-  _id: string;
+  _id?: string;
 }
 
 export interface IToDoState {
-  toDoList: IToDoItem[];
+  toDoList: {
+    completed: IToDoItem[],
+    notCompleted: IToDoItem[],
+  }
 }
