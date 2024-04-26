@@ -28,6 +28,16 @@ const useToDoStore = defineStore('todo', {
         console.log(err);
       }
     },
+    async editToDo(toDoItem: IToDoItem) {
+      try {
+        await privateApi.patch(`/todos/${toDoItem._id}`, {
+          ...toDoItem,
+        });
+        await this.getToDoList();
+      } catch (err) {
+        console.log(err);
+      }
+    },
   },
 });
 
