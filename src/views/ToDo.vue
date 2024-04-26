@@ -45,9 +45,9 @@
       <el-form-item label="Comment" prop="comment">
         <el-input v-model="newToDoItem.comment" />
       </el-form-item>
-      <el-form-item label="Completed" prop="completed">
+      <!-- <el-form-item label="Completed" prop="completed">
         <el-switch v-model="newToDoItem.completed" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item id="todo-buttons">
         <el-button type="primary" @click="postToDo()">Add</el-button>
         <el-button @click="clearToDo()">Clear</el-button>
