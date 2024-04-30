@@ -3,7 +3,7 @@
     <router-link :to="{ name: 'Home' }">Home</router-link>
     <h1 class="todo-page__title">ToDoList</h1>
     <h2>Not completed</h2>
-    <div class="todo-list-not-completed">
+    <div v-if="toDoList.notCompleted.length" class="todo-list-not-completed">
       <el-card class="todo-item" v-for="todo in toDoList.notCompleted" :key="todo._id">
         <h3 class="todo-item__header">{{ todo.title }}</h3>
         <div class="todo-item__main">
@@ -22,12 +22,19 @@
         </div>
       </el-card>
     </div>
+    <div v-else>
+      Your uncompleted tasks will be displayed here
+    </div>
+    <div class="todo-page__line" />
     <h2>Completed</h2>
-    <div class="todo-list-completed">
+    <div v-if="toDoList.completed.length" class="todo-list-completed">
       <el-card class="todo-item-completed" v-for="todo in toDoList.completed" :key="todo._id">
         <h3 class="todo-item__header todo-item__header_completed">{{ todo.title }}</h3>
         <el-switch v-model="todo.completed" @change="updateToDo(todo)" />
       </el-card>
+    </div>
+    <div v-else>
+      Your completed tasks will be displayed here
     </div>
     <h2>Add new TODO</h2>
     <el-form
@@ -71,6 +78,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-button type="danger" @click="toDoStore.deleteAllToDos">Delete All ToDos</el-button>
   </div>
 </template>
 
@@ -153,6 +161,11 @@ onMounted(() => {
   align-items: center;
   &__title {
     margin: 10px 0 0;
+  }
+  &__line {
+    border-bottom: 1px dotted gray;
+    width: 80%;
+    margin-top: 20px;
   }
 }
 
