@@ -22,5 +22,8 @@ export interface IToDoState {
   toDoList: {
     completed: IToDoItem[],
     notCompleted: IToDoItem[],
-  }
+  };
+  pageSize: number;
+  totalCount: number;
+  currentPage: number;
 }

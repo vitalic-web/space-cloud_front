@@ -2,6 +2,16 @@
   <div id="todo" class="todo-page">
     <router-link :to="{ name: 'Home' }">Home</router-link>
     <h1 class="todo-page__title">ToDoList</h1>
+    <el-pagination
+      class="todo-page__pagination"
+      background
+      layout="prev, pager, next"
+      :hide-on-single-page="!totalCount"
+      :page-size="pageSize"
+      :total="totalCount"
+      :current-page="currentPage"
+      @current-change="togglePagination"
+    />
     <h2>Not completed</h2>
     <div v-if="toDoList.notCompleted.length" class="todo-list-not-completed">
       <el-card class="todo-item" v-for="todo in toDoList.notCompleted" :key="todo._id">
@@ -90,7 +100,9 @@ import { Edit } from '@element-plus/icons-vue';
 import { IToDoItem } from '@/types';
 
 const toDoStore = useToDoStore();
-const { toDoList } = storeToRefs(toDoStore);
+const {
+  toDoList, pageSize, totalCount, currentPage,
+} = storeToRefs(toDoStore);
 
 const newToDoItem = reactive({
   title: '',
@@ -149,6 +161,11 @@ const editToDo = async () => {
   }
 };
 
+const togglePagination = (num: number) => {
+  toDoStore.setCurrentPage(num);
+  toDoStore.getToDoList();
+};
+
 onMounted(() => {
   toDoStore.getToDoList();
 });
@@ -166,6 +183,9 @@ onMounted(() => {
     border-bottom: 1px dotted gray;
     width: 80%;
     margin-top: 20px;
+  }
+  &__pagination {
+    margin-top: 10px;
   }
 }
 

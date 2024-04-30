@@ -9,21 +9,41 @@ const useToDoStore = defineStore('todo', {
       completed: [],
       notCompleted: [],
     },
+    pageSize: 2,
+    totalCount: 0,
+    currentPage: 1,
   }),
   actions: {
+    setCurrentPage(value: number) {
+      this.currentPage = value;
+    },
     async getToDoList() {
       try {
-        const todoList = await privateApi.get('/todo-list');
-        this.toDoList = todoList.data;
+        const todoList = await privateApi.get('/todo-list', {
+          params: {
+            pageSize: this.pageSize,
+            page: this.currentPage,
+          },
+        });
+        this.toDoList = todoList.data.todos;
+        this.totalCount = todoList.data.totalCount;
       } catch (err) {
         console.log(err);
       }
     },
     async postToDo(toDoItem: IToDoItem) {
       try {
-        await privateApi.post('/todos', {
+        const toDoInfo = await privateApi.post('/todos', {
           ...toDoItem,
+          paginationInfo: {
+            currentPage: this.currentPage,
+            pageSize: this.pageSize,
+          },
         });
+        const { isLoadLastPage, pageNumber } = toDoInfo.data.paginationInfo;
+        if (isLoadLastPage) {
+          this.setCurrentPage(pageNumber);
+        }
         await this.getToDoList();
       } catch (err) {
         console.log(err);
