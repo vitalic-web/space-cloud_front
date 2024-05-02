@@ -4,9 +4,12 @@ export interface IAuthState {
   username: string | null;
 }
 
-interface IFile {
+export interface IFile {
   name: string;
   downloadLink: string;
+  status: string;
+  uid: number;
+  _id: string;
 }
 
 export interface IToDoItem {

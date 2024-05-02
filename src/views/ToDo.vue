@@ -30,6 +30,8 @@
           :headers="{ authorization: `Bearer ${accessToken}` }"
           multiple
           :on-error="handleErrorUpload"
+          :on-remove="handleRemoveFile"
+          :on-preview="handleDownloadFile"
           :limit="3"
         >
           <el-button type="primary">Click to upload</el-button>
@@ -113,9 +115,10 @@ import { onMounted, reactive, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import useToDoStore from '@/stores/todo';
 import { Edit } from '@element-plus/icons-vue';
-import { IToDoItem } from '@/types';
+import { IToDoItem, IFile } from '@/types';
 import useAuthStore from '@/stores/auth';
 import { ElNotification } from 'element-plus';
+import { privateApi } from '@/services/api';
 
 const toDoStore = useToDoStore();
 const {
@@ -194,6 +197,31 @@ const handleErrorUpload = (err: Error) => {
     message: baseErrorMessage,
     type: 'error',
   });
+};
+
+const handleDownloadFile = async (file: IFile) => {
+  try {
+    const response = await privateApi.get(file.downloadLink, { responseType: 'blob' });
+    console.log('response', response);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', file.name);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (err) {
+    console.log('err', err);
+  }
+};
+
+const handleRemoveFile = async (file: IFile) => {
+  console.log('file', file.downloadLink);
+  // try {
+  //   await privateApi.delete(file.downloadLink);
+  // } catch (err) {
+  //   console.log('err', err);
+  // }
 };
 
 onMounted(() => {
