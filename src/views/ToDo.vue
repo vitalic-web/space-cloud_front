@@ -234,8 +234,7 @@ const handleDownloadFile = async (file: IFile) => {
 };
 
 const openEditLinkDialog = (file: IFile) => {
-  console.log('file', file);
-  curentEditingLink.value = file.downloadLink;
+  curentEditingLink.value = file.downloadLink.split('/').slice(2).join('/');
   isOpenEditLinkDialog.value = true;
 };
 
