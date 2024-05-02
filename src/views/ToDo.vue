@@ -23,6 +23,22 @@
             {{ todo.comment }}
           </p>
         </div>
+        <el-upload
+          :file-list="todo.files"
+          class="todo-item__upload"
+          :action="`http://localhost:3000/todos/${todo._id}/files`"
+          :headers="{ authorization: `Bearer ${accessToken}` }"
+          multiple
+          :on-error="handleErrorUpload"
+          :limit="3"
+        >
+          <el-button type="primary">Click to upload</el-button>
+          <template #tip>
+            <div class="el-upload__tip">
+              files with a size less than 16MB.
+            </div>
+          </template>
+        </el-upload>
         <div class="todo-item__footer">
           <hr class="todo-item__footer-line" />
           <div class="todo-item__footer-buttons">
@@ -98,11 +114,15 @@ import { storeToRefs } from 'pinia';
 import useToDoStore from '@/stores/todo';
 import { Edit } from '@element-plus/icons-vue';
 import { IToDoItem } from '@/types';
+import useAuthStore from '@/stores/auth';
+import { ElNotification } from 'element-plus';
 
 const toDoStore = useToDoStore();
 const {
   toDoList, pageSize, totalCount, currentPage,
 } = storeToRefs(toDoStore);
+
+const { accessToken } = storeToRefs(useAuthStore());
 
 const newToDoItem = reactive({
   title: '',
@@ -166,6 +186,16 @@ const togglePagination = (num: number) => {
   toDoStore.getToDoList();
 };
 
+const handleErrorUpload = (err: Error) => {
+  const elementErrorMessage = String(err);
+  const baseErrorMessage = elementErrorMessage.replace('UploadAjaxError: ', '');
+  ElNotification({
+    title: 'Error',
+    message: baseErrorMessage,
+    type: 'error',
+  });
+};
+
 onMounted(() => {
   toDoStore.getToDoList();
 });
@@ -215,7 +245,6 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
     height: 100%;
   }
   &__description {
@@ -228,6 +257,9 @@ onMounted(() => {
   }
   &__comment-title {
     font-weight: bold;
+  }
+  &__upload {
+    margin-top: 5px;
   }
   &__footer {
     display: flex;
