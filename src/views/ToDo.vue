@@ -25,16 +25,32 @@
         </div>
         <el-upload
           :file-list="todo.files"
-          class="todo-item__upload"
+          class="todo-item-upload"
           :action="`http://localhost:3000/todos/${todo._id}/files`"
           :headers="{ authorization: `Bearer ${accessToken}` }"
           multiple
           :on-error="handleErrorUpload"
           :on-remove="handleRemoveFile"
-          :on-preview="handleDownloadFile"
           :limit="3"
         >
           <el-button type="primary">Click to upload</el-button>
+          <template #file="{ file }">
+            <div class="todo-item-upload__container">
+              <span class="todo-item-pointer" @click="handleDownloadFile(file)">
+                {{ file.downloadLink }}
+              </span>
+              <div class="todo-item-upload__buttons">
+                <Edit class="todo-item-pointer" @click="openEditLinkDialog(file)" />
+                <Delete class="todo-item-pointer" />
+                <el-dialog v-model="isOpenEditLinkDialog">
+                  <div class="todo-item-upload__edit-dialog">
+                    <el-input class="todo-item-upload__input" v-model="curentEditingLink" />
+                    <CircleCheck class="todo-item-pointer" @click="editLink(file._id)" />
+                  </div>
+                </el-dialog>
+              </div>
+            </div>
+          </template>
           <template #tip>
             <div class="el-upload__tip">
               files with a size less than 16MB.
@@ -114,7 +130,7 @@
 import { onMounted, reactive, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import useToDoStore from '@/stores/todo';
-import { Edit } from '@element-plus/icons-vue';
+import { Edit, Delete, CircleCheck } from '@element-plus/icons-vue';
 import { IToDoItem, IFile } from '@/types';
 import useAuthStore from '@/stores/auth';
 import { ElNotification } from 'element-plus';
@@ -136,6 +152,7 @@ const newToDoItem = reactive({
 });
 
 const isOpenDialog = ref(false);
+const isOpenEditLinkDialog = ref(false);
 
 let currentEditingTodo = reactive<IToDoItem>({
   title: '',
@@ -144,6 +161,8 @@ let currentEditingTodo = reactive<IToDoItem>({
   comment: '',
   files: [],
 });
+
+const curentEditingLink = ref<string>('');
 
 const clearToDo = () => {
   newToDoItem.title = '';
@@ -202,7 +221,6 @@ const handleErrorUpload = (err: Error) => {
 const handleDownloadFile = async (file: IFile) => {
   try {
     const response = await privateApi.get(file.downloadLink, { responseType: 'blob' });
-    console.log('response', response);
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
@@ -210,6 +228,23 @@ const handleDownloadFile = async (file: IFile) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  } catch (err) {
+    console.log('err', err);
+  }
+};
+
+const openEditLinkDialog = (file: IFile) => {
+  console.log('file', file);
+  curentEditingLink.value = file.downloadLink;
+  isOpenEditLinkDialog.value = true;
+};
+
+const editLink = async (fileId: string) => {
+  try {
+    await privateApi.patch(`/files/${fileId}/download-link`, {
+      newDownloadLink: curentEditingLink.value,
+    });
+    isOpenEditLinkDialog.value = false;
   } catch (err) {
     console.log('err', err);
   }
@@ -286,9 +321,6 @@ onMounted(() => {
   &__comment-title {
     font-weight: bold;
   }
-  &__upload {
-    margin-top: 5px;
-  }
   &__footer {
     display: flex;
     flex-direction: column;
@@ -300,6 +332,34 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+}
+
+.todo-item-pointer {
+  cursor: pointer;
+}
+
+.todo-item-upload {
+  margin-top: 5px;
+  &__container {
+    display: flex;
+    height: 19px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  &__buttons {
+    display: flex;
+    gap: 10px;
+  }
+  &__edit-dialog {
+    display: flex;
+    height: 30px;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 30px;
+  }
+  &__input {
+    width: 60%;
   }
 }
 
