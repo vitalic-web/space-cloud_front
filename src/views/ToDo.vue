@@ -31,17 +31,21 @@
           multiple
           :on-error="handleErrorUpload"
           :on-remove="handleRemoveFile"
+          :on-success="handleOnSuccess"
           :limit="3"
         >
           <el-button type="primary">Click to upload</el-button>
           <template #file="{ file }">
             <div class="todo-item-upload__container">
-              <span class="todo-item-pointer" @click="handleDownloadFile(file)">
+              <span
+                class="todo-item-upload__link todo-item-pointer"
+                @click="handleDownloadFile(file)"
+              >
                 {{ file.downloadLink }}
               </span>
               <div class="todo-item-upload__buttons">
                 <Edit class="todo-item-pointer" @click="openEditLinkDialog(file)" />
-                <Delete class="todo-item-pointer" />
+                <Delete class="todo-item-pointer" @click="handleRemoveFile(file, todo)" />
                 <el-dialog v-model="isOpenEditLinkDialog">
                   <div class="todo-item-upload__edit-dialog">
                     <el-input class="todo-item-upload__input" v-model="curentEditingLink" />
@@ -243,19 +247,24 @@ const editLink = async (fileId: string) => {
     await privateApi.patch(`/files/${fileId}/download-link`, {
       newDownloadLink: curentEditingLink.value,
     });
+    await toDoStore.getToDoList();
     isOpenEditLinkDialog.value = false;
   } catch (err) {
     console.log('err', err);
   }
 };
 
-const handleRemoveFile = async (file: IFile) => {
-  console.log('file', file.downloadLink);
-  // try {
-  //   await privateApi.delete(file.downloadLink);
-  // } catch (err) {
-  //   console.log('err', err);
-  // }
+const handleRemoveFile = async (file: IFile, todo: IToDoItem) => {
+  try {
+    await privateApi.delete(`/files/${file._id}/${todo._id}`);
+    await toDoStore.getToDoList();
+  } catch (err) {
+    console.log('err', err);
+  }
+};
+
+const handleOnSuccess = async () => {
+  await toDoStore.getToDoList();
 };
 
 onMounted(() => {
@@ -359,6 +368,12 @@ onMounted(() => {
   }
   &__input {
     width: 60%;
+  }
+  &__link {
+    width: 385px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }
 
