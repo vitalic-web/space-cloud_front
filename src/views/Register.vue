@@ -96,7 +96,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
           password: registerForm.pass,
         });
         if (res.status === 200) {
-          console.log('res', res.data.user);
           ElNotification({
             title: 'Success',
             message: `Registration successful for ${res.data.user.username}. Redirect to log in page.`,
